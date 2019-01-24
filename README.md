@@ -7,6 +7,17 @@ See requirements.org (plain-text) for a description of the project.
 
 Make a simple webserver.
 
+
+References
+==========
+
+>Title: HTTP server classes
+>Author: HTTP Working Group (Python)
+>Date: 2019, Jan.20
+>Code Version: Python3.7
+>Availability: https://github.com/python/cpython/blob/3.7/Lib/http/server.py
+
+
 Contributors / Licensing
 ========================
 

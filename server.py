@@ -29,6 +29,17 @@ import os
 
 # try: curl -v -X GET http://127.0.0.1:8080/
 
+
+######## Reference ########
+""" 
+    Title: HTTP server classes
+    Author: HTTP Working Group (Python)
+    Date: 2019, Jan.20
+    Code Version: Python3.7
+    Availability: https://github.com/python/cpython/blob/3.7/Lib/http/server.py
+"""
+###########################
+
 # Default error message template
 DEFAULT_ERROR_MESSAGE = """\
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
