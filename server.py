@@ -3,6 +3,7 @@ import socketserver
 from http import HTTPStatus
 import html
 import os
+from pathlib import Path
 
 # Copyright 2013 Abram Hindle, Eddie Antonio Santos
 # Modified work Copyright 2019 Xinlei Chen
@@ -90,7 +91,7 @@ class MyWebServer(socketserver.BaseRequestHandler):
         # get the path we need
         des_path = static_file_path + path
         
-        if(os.path.isfile(des_path)):
+        if(os.path.isfile(des_path) and self._check_path_inside_rootpath(des_path, static_file_path)):
             # print("des_path", des_path)
 
             file_type = des_path.split("/")[-1].split(".")[-1]
@@ -100,11 +101,12 @@ class MyWebServer(socketserver.BaseRequestHandler):
             else:
                 response = self._send_error(HttpError(HTTPStatus.NOT_FOUND, "only serve css & html file"))
         
-        elif(os.path.isdir(des_path)): # we have this dir
+        elif(os.path.isdir(des_path) and self._check_path_inside_rootpath(des_path, static_file_path)): # we have this dir
             if(des_path.endswith("/") and os.path.isfile(des_path+"index.html")):
                 response = self._send_body(des_path+"index.html", "html", HTTPStatus.OK)
 
             elif(not des_path.endswith("/") and os.path.isfile(des_path+"/"+"index.html")):
+                # print("path", path)
                 response = self._send_redirect(path+"/", HTTPStatus.MOVED_PERMANENTLY) 
 
             else:
@@ -116,12 +118,22 @@ class MyWebServer(socketserver.BaseRequestHandler):
         return response
 
 
+    def _check_path_inside_rootpath(self, path, rootpath):
+        if(str(rootpath) == str(os.path.abspath(path))):
+            return True
+
+        if(Path(rootpath) in Path(os.path.abspath(path)).parents):
+            return True
+
+        return False
+
+
     def _send_redirect(self, redirect_path, http_status):
         status = "HTTP/1.1 {} {}\r\n".format(http_status.value, http_status.phrase).encode('latin-1', 'strict')
 
         header = []
         header.append(status)
-        header.append(self._get_header("Location", redirect_path))
+        header.append(self._get_header("Location", "http://" + HOST + ":" + str(PORT) + redirect_path))
         header.append(b"\r\n")
 
         response = header
